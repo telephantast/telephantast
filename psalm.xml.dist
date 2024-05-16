@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<psalm
+    cacheDirectory="var/psalm"
+    checkForThrowsDocblock="true"
+    checkForThrowsInGlobalScope="true"
+    disableSuppressAll="true"
+    ensureArrayStringOffsetsExist="true"
+    errorLevel="1"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="true"
+    findUnusedPsalmSuppress="true"
+    findUnusedVariablesAndParams="true"
+    memoizeMethodCallResults="true"
+    reportMixedIssues="true"
+    sealAllMethods="true"
+    sealAllProperties="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <enableExtensions>
+        <extension name="random"/>
+    </enableExtensions>
+
+    <projectFiles>
+        <directory name="src"/>
+        <directory name="tests"/>
+        <directory name="tools/psalm/src"/>
+        <ignoreFiles>
+            <directory name="var"/>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <plugins>
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+        <pluginClass class="Telephantast\Tools\Psalm\CheckVisibilityPlugin"/>
+    </plugins>
+
+    <ignoreExceptions>
+        <classAndDescendants name="ReflectionException"/>
+        <classAndDescendants name="LogicException"/>
+        <classAndDescendants name="RuntimeException"/>
+    </ignoreExceptions>
+
+    <issueHandlers>
+        <PluginIssue name="UnspecifiedVisibility">
+            <errorLevel type="suppress">
+                <directory name="tests"/>
+                <directory name="tools/psalm/src"/>
+            </errorLevel>
+        </PluginIssue>
+        <MissingThrowsDocblock>
+            <errorLevel type="suppress">
+                <directory name="tests"/>
+            </errorLevel>
+        </MissingThrowsDocblock>
+        <MixedAssignment errorLevel="suppress"/>
+    </issueHandlers>
+
+    <forbiddenFunctions>
+        <function name="dd"/>
+        <function name="die"/>
+        <function name="dump"/>
+        <function name="echo"/>
+        <function name="empty"/>
+        <function name="eval"/>
+        <function name="exit"/>
+        <function name="print"/>
+        <function name="sleep"/>
+        <function name="usleep"/>
+    </forbiddenFunctions>
+</psalm>

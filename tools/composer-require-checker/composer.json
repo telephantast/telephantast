@@ -1,0 +1,8 @@
+{
+    "require": {
+        "maglnet/composer-require-checker": "^4.11"
+    },
+    "config": {
+        "lock": false
+    }
+}

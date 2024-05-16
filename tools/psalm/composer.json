@@ -1,0 +1,18 @@
+{
+    "require-dev": {
+        "psalm/plugin-phpunit": "^0.18.4",
+        "vimeo/psalm": "^5.23.0"
+    },
+    "conflict": {
+        "netresearch/jsonmapper": "<4",
+        "vimeo/psalm": "5.24"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Telephantast\\Tools\\Psalm\\": "src/"
+        }
+    },
+    "config": {
+        "lock": false
+    }
+}
