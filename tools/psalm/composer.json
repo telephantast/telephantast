@@ -7,6 +7,10 @@
         "netresearch/jsonmapper": "<4",
         "vimeo/psalm": "5.24"
     },
+    "replace": {
+        "amphp/amp": "*",
+        "amphp/byte-stream": "*"
+    },
     "autoload-dev": {
         "psr-4": {
             "Telephantast\\Tools\\Psalm\\": "src/"

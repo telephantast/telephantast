@@ -15,7 +15,7 @@ use function Telephantast\MessageBus\MessageId\messageId;
 final readonly class AddToOutboxInsteadOfPublishMiddleware implements Middleware
 {
     public function __construct(
-        private OutboxRepository $outboxRepository,
+        private OutboxRepository $repository,
     ) {}
 
     public function handle(MessageContext $messageContext, Pipeline $pipeline): mixed
@@ -26,7 +26,7 @@ final readonly class AddToOutboxInsteadOfPublishMiddleware implements Middleware
             return $pipeline->continue();
         }
 
-        $this->outboxRepository->add($outboxId, messageId($messageContext), $messageContext->envelope);
+        $this->repository->add($outboxId, messageId($messageContext), $messageContext->envelope);
 
         /** @phpstan-ignore return.type */
         return null;

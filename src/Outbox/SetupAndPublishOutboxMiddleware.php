@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Telephantast\Outbox;
 
+use Amp\Future;
+use Telephantast\Async\TransportPublish;
 use Telephantast\MessageBus\Envelope;
 use Telephantast\MessageBus\Handler\Pipeline;
 use Telephantast\MessageBus\MessageContext;
 use Telephantast\MessageBus\Middleware;
+use function Amp\Future\await;
 use function Telephantast\MessageBus\MessageId\messageId;
 
 /**
@@ -16,8 +19,8 @@ use function Telephantast\MessageBus\MessageId\messageId;
 final readonly class SetupAndPublishOutboxMiddleware implements Middleware
 {
     public function __construct(
-        private OutboxRepository $outboxRepository,
-        private OutboxPublish $publish,
+        private OutboxRepository $repository,
+        private TransportPublish $publish,
     ) {}
 
     public function handle(MessageContext $messageContext, Pipeline $pipeline): mixed
@@ -35,13 +38,12 @@ final readonly class SetupAndPublishOutboxMiddleware implements Middleware
 
         $result = $pipeline->continue();
 
-        $envelopes = $this->outboxRepository->get($outboxId);
-
-        if ($envelopes !== []) {
-            $this->publish->publish($envelopes, function (Envelope $envelope): void {
-                $this->outboxRepository->remove(messageId($envelope));
-            });
-        }
+        await(array_map(
+            fn(Envelope $envelope): Future => $this->publish->publish($envelope)->map(function () use ($envelope): void {
+                $this->repository->remove(messageId($envelope));
+            }),
+            $this->repository->get($outboxId),
+        ));
 
         return $result;
     }

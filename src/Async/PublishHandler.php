@@ -30,7 +30,7 @@ final readonly class PublishHandler implements Handler
 
     public function handle(MessageContext $messageContext): mixed
     {
-        $this->publish->publish([$messageContext->envelope]);
+        $this->publish->publish($messageContext->envelope)->await();
 
         return null;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Telephantast\Async;
 
+use Amp\Future;
 use Telephantast\Message\Message;
 use Telephantast\MessageBus\Envelope;
 
@@ -15,7 +16,8 @@ interface TransportPublish
     /**
      * @template TResult
      * @template TMessage of Message<TResult>
-     * @param non-empty-list<Envelope<TResult, TMessage>> $envelopes
+     * @param Envelope<TResult, TMessage> $envelope
+     * @return Future<void>
      */
-    public function publish(array $envelopes): void;
+    public function publish(Envelope $envelope): Future;
 }

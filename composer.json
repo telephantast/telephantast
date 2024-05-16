@@ -10,6 +10,7 @@
     ],
     "require": {
         "php": "^8.3",
+        "amphp/amp": "^3.0",
         "psr/clock": "^1.0",
         "psr/log": "^3.0"
     },
