@@ -20,7 +20,7 @@ final readonly class AddToOutboxInsteadOfPublishMiddleware implements Middleware
 
     public function handle(MessageContext $messageContext, Pipeline $pipeline): mixed
     {
-        $outboxId = $messageContext->parent?->attribute(Outbox::class)?->outboxId;
+        $outboxId = $messageContext->parent?->getAttribute(Outbox::class)?->outboxId;
 
         if ($outboxId === null) {
             return $pipeline->continue();

@@ -24,7 +24,7 @@ final readonly class LoggingMiddleware implements Middleware
     public function handle(MessageContext $messageContext, Pipeline $pipeline): mixed
     {
         $this->logger->info('About to handle message {message_class}.', [
-            'message_class' => $messageContext->messageClass(),
+            'message_class' => $messageContext->getMessageClass(),
             'handler_id' => $pipeline->id(),
             'envelope' => $messageContext->envelope,
         ]);
@@ -34,7 +34,7 @@ final readonly class LoggingMiddleware implements Middleware
         } catch (\Throwable $exception) {
             $this->logger->critical('Failed to handle message {message_class}.', [
                 'exception' => $exception,
-                'message_class' => $messageContext->messageClass(),
+                'message_class' => $messageContext->getMessageClass(),
                 'handler_id' => $pipeline->id(),
                 'envelope' => $messageContext->envelope,
             ]);
@@ -43,7 +43,7 @@ final readonly class LoggingMiddleware implements Middleware
         }
 
         $this->logger->debug('Successfully handled message {message_class}.', [
-            'message_class' => $messageContext->messageClass(),
+            'message_class' => $messageContext->getMessageClass(),
             'handler_id' => $pipeline->id(),
             'envelope' => $messageContext->envelope,
             'result' => $result,

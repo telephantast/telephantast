@@ -22,7 +22,7 @@ final readonly class SetupAndPublishOutboxMiddleware implements Middleware
 
     public function handle(MessageContext $messageContext, Pipeline $pipeline): mixed
     {
-        $outbox = $messageContext->parent?->attribute(Outbox::class);
+        $outbox = $messageContext->parent?->getAttribute(Outbox::class);
 
         if ($outbox !== null) {
             $messageContext->setAttribute($outbox);

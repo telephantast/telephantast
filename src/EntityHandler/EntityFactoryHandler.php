@@ -45,7 +45,7 @@ final readonly class EntityFactoryHandler implements Handler
 
     public function handle(MessageContext $messageContext): mixed
     {
-        $message = $messageContext->message();
+        $message = $messageContext->getMessage();
         $entity = $this->finder->findBy($this->class, $this->findBy->resolve($message));
 
         if ($entity === null) {
