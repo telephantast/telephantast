@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\Outbox;
+namespace Telephantast\MessageBus\Outbox;
 
 use Telephantast\MessageBus\Handler\Pipeline;
 use Telephantast\MessageBus\MessageContext;

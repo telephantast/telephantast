@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\Deduplication;
+namespace Telephantast\MessageBus\Deduplication;
 
 /**
  * @api

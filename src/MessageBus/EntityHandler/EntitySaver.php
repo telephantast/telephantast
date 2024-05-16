@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\EntityHandler;
+namespace Telephantast\MessageBus\EntityHandler;
 
 /**
  * @api

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\Logging;
+namespace Telephantast\MessageBus\Logging;
 
 use Psr\Log\LoggerInterface;
 use Telephantast\MessageBus\Handler\Pipeline;

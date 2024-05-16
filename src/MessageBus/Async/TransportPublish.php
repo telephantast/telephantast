@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\Async;
+namespace Telephantast\MessageBus\Async;
 
 use Amp\Future;
 use Telephantast\Message\Message;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\Outbox;
+namespace Telephantast\MessageBus\Outbox;
 
 use Telephantast\MessageBus\ContextAttribute;
 
 /**
  * @internal
- * @psalm-internal Telephantast\Outbox
+ * @psalm-internal Telephantast\MessageBus\Outbox
  */
 final readonly class Outbox implements ContextAttribute
 {

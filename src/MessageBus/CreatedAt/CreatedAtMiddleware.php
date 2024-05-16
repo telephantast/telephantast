@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\CreatedAt;
+namespace Telephantast\MessageBus\CreatedAt;
 
 use Psr\Clock\ClockInterface;
 use Telephantast\MessageBus\Handler\Pipeline;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telephantast\Deduplication;
+namespace Telephantast\MessageBus\Deduplication;
 
 use Telephantast\MessageBus\Handler\Pipeline;
 use Telephantast\MessageBus\MessageContext;
