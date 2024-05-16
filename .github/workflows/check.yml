@@ -3,7 +3,7 @@ name: Check
 on:
   workflow_dispatch: ~
   push:
-    branches: ['*.x']
+    branches: ['main', '*.x']
   pull_request: ~
 
 jobs:
