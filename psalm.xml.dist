@@ -27,6 +27,7 @@
         <directory name="tests"/>
         <directory name="tools/psalm/src"/>
         <ignoreFiles>
+            <directory name="src/Demo"/>
             <directory name="var"/>
             <directory name="vendor"/>
         </ignoreFiles>
@@ -70,4 +71,12 @@
         <function name="sleep"/>
         <function name="usleep"/>
     </forbiddenFunctions>
+
+    <stubs>
+        <file name="stubs/Bunny/AbstractClient.phpstub"/>
+        <file name="stubs/Bunny/Async/Client.phpstub"/>
+        <file name="stubs/Bunny/Channel.phpstub"/>
+        <file name="stubs/Psr/Container/ContainerInterface.phpstub"/>
+        <file name="stubs/React/Promise/PromiseInterface.phpstub"/>
+    </stubs>
 </psalm>

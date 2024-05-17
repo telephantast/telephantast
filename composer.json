@@ -10,9 +10,16 @@
     ],
     "require": {
         "php": "^8.3",
+        "ext-pcntl": "*",
         "amphp/amp": "^3.0",
+        "bunny/bunny": "^0.5.5",
         "psr/clock": "^1.0",
-        "psr/log": "^3.0"
+        "psr/container": "^2.0",
+        "psr/log": "^3.0",
+        "react/async": "^4.2",
+        "react/event-loop": "^1.5",
+        "react/promise": "^2.11",
+        "revolt/event-loop-adapter-react": "^1.1"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.8.2",
@@ -25,10 +32,7 @@
     "autoload": {
         "psr-4": {
             "Telephantast\\": "src/"
-        },
-        "files": [
-            "src/MessageBus/MessageId/functions.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

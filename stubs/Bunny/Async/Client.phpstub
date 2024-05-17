@@ -1,0 +1,13 @@
+<?php
+
+namespace Bunny\Async;
+
+use React\Promise\PromiseInterface;
+
+class Client
+{
+    /**
+     * @return PromiseInterface<self>
+     */
+    public function connect() {}
+}

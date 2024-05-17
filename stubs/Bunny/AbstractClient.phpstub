@@ -1,0 +1,18 @@
+<?php
+
+namespace Bunny;
+
+use React\Promise\PromiseInterface;
+
+abstract class AbstractClient
+{
+    /**
+     * @var array{ heartbeat: float }
+     */
+    protected $options;
+
+    /**
+     * @return PromiseInterface<Channel>
+     */
+    public function channel() {}
+}

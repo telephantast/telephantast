@@ -1,0 +1,18 @@
+<?php
+
+namespace React\Promise;
+
+/**
+ * @template-covariant T
+ */
+interface PromiseInterface
+{
+    /**
+     * @template TFulfilled
+     * @template TRejected
+     * @param ?(callable((T is void ? null : T)): (PromiseInterface<TFulfilled>|TFulfilled)) $onFulfilled
+     * @param ?(callable(\Throwable): (PromiseInterface<TRejected>|TRejected)) $onRejected
+     * @return PromiseInterface<($onRejected is null ? ($onFulfilled is null ? T : TFulfilled) : ($onFulfilled is null ? T|TRejected : TFulfilled|TRejected))>
+     */
+    public function then(?callable $onFulfilled = null, ?callable $onRejected = null): PromiseInterface;
+}

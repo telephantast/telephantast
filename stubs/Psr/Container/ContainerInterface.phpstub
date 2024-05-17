@@ -1,0 +1,14 @@
+<?php
+
+namespace Psr\Container;
+
+/**
+ * @template-covariant TItem
+ */
+interface ContainerInterface
+{
+    /**
+     * @return TItem
+     */
+    public function get(string $id);
+}
