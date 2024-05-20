@@ -58,6 +58,8 @@
         "check-require": [
             "@composer install --working-dir=src/BunnyTransport",
             "tools/composer-require-checker/vendor/bin/composer-require-checker check src/BunnyTransport/composer.json",
+            "@composer install --working-dir=src/Demo",
+            "tools/composer-require-checker/vendor/bin/composer-require-checker check src/Demo/composer.json",
             "@composer install --working-dir=src/Message",
             "tools/composer-require-checker/vendor/bin/composer-require-checker check src/Message/composer.json",
             "@composer install --working-dir=src/MessageBus",
@@ -69,6 +71,7 @@
         "normalize-all": [
             "@composer normalize --diff",
             "@composer normalize --diff src/BunnyTransport/composer.json",
+            "@composer normalize --diff src/Demo/composer.json",
             "@composer normalize --diff src/Message/composer.json",
             "@composer normalize --diff src/MessageBus/composer.json",
             "@composer normalize --diff src/PdoPersistence/composer.json",
@@ -81,6 +84,7 @@
         "validate-all": [
             "@composer validate --strict --no-check-publish",
             "@composer validate --strict src/BunnyTransport/composer.json",
+            "@composer validate --strict --no-check-publish src/Demo/composer.json",
             "@composer validate --strict src/Message/composer.json",
             "@composer validate --strict src/MessageBus/composer.json",
             "@composer validate --strict src/PdoPersistence/composer.json"

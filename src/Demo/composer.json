@@ -1,0 +1,25 @@
+{
+    "description": "Telephantast Demo",
+    "license": "MIT",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Valentin Udaltsov",
+            "email": "udaltsov.valentin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "ext-pcntl": "*",
+        "amphp/amp": "^3.0",
+        "revolt/event-loop-adapter-react": "^1.1",
+        "telephantast/bunny-transport": "^0.1@dev",
+        "telephantast/message": "^0.1@dev",
+        "telephantast/message-bus": "^0.1@dev",
+        "telephantast/pdo-persistence": "^0.1@dev"
+    },
+    "config": {
+        "lock": false,
+        "sort-packages": true
+    }
+}

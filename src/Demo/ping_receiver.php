@@ -26,7 +26,7 @@ use Telephantast\PdoPersistence\PostgresDeduplicator;
 use Telephantast\PdoPersistence\PostgresOutboxRepository;
 use function Amp\trapSignal;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/messages.php';
 
 const PING_RECEIVER_QUEUE = 'ping_receiver';
