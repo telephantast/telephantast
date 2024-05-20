@@ -11,10 +11,11 @@
     ],
     "require": {
         "php": "^8.3",
-        "ext-pdo": "*",
+        "bunny/bunny": "^0.5.5",
         "react/async": "^4.2",
         "react/event-loop": "^1.5",
         "react/promise": "^2.11",
+        "telephantast/message": "^0.1@dev",
         "telephantast/message-bus": "^0.1@dev"
     },
     "autoload": {
