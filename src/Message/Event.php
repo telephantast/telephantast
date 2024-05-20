@@ -7,6 +7,6 @@ namespace Telephantast\Message;
 /**
  * @api
  * @psalm-immutable
- * @extends Message<null>
+ * @extends Message<void>
  */
 interface Event extends Message {}

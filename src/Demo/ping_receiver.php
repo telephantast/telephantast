@@ -26,6 +26,7 @@ use Telephantast\PdoPersistence\PostgresDeduplicator;
 use Telephantast\PdoPersistence\PostgresOutboxRepository;
 use function Amp\trapSignal;
 
+/** @psalm-suppress MissingFile */
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/messages.php';
 
@@ -53,6 +54,7 @@ $transportSetup->setup([
 ]);
 
 // Handle pong locally + publish to RabbitMQ
+/** @psalm-suppress InvalidArgument */
 $messageBus = new MessageBus(
     handlerRegistry: new ArrayHandlerRegistry([
         Pong::class => new EventHandlers([

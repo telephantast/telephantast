@@ -9,7 +9,7 @@ use Telephantast\Message\Message;
 
 /**
  * @psalm-immutable
- * @implements Message<null>
+ * @implements Message<void>
  */
 final readonly class Ping implements Message {}
 

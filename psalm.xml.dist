@@ -27,7 +27,6 @@
         <directory name="tests"/>
         <directory name="tools/psalm/src"/>
         <ignoreFiles>
-            <directory name="src/Demo"/>
             <directory name="var"/>
             <directory name="vendor"/>
         </ignoreFiles>
@@ -45,8 +44,19 @@
     </ignoreExceptions>
 
     <issueHandlers>
+        <ForbiddenCode>
+            <errorLevel type="suppress">
+                <directory name="src/Demo"/>
+            </errorLevel>
+        </ForbiddenCode>
+        <UncaughtThrowInGlobalScope>
+            <errorLevel type="suppress">
+                <directory name="src/Demo"/>
+            </errorLevel>
+        </UncaughtThrowInGlobalScope>
         <PluginIssue name="UnspecifiedVisibility">
             <errorLevel type="suppress">
+                <directory name="src/Demo"/>
                 <directory name="tests"/>
                 <directory name="tools/psalm/src"/>
             </errorLevel>
