@@ -1,0 +1,29 @@
+{
+    "name": "telephantast/bunny-transport",
+    "description": "Telephantast Bunny Transport",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Valentin Udaltsov",
+            "email": "udaltsov.valentin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "ext-pdo": "*",
+        "react/async": "^4.2",
+        "react/event-loop": "^1.5",
+        "react/promise": "^2.11",
+        "telephantast/message-bus": "^0.1@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Telephantast\\BunnyTransport\\": ""
+        }
+    },
+    "config": {
+        "lock": false,
+        "vendor-dir": "../../var/BunnyTransport/vendor"
+    }
+}

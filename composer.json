@@ -55,12 +55,27 @@
         }
     },
     "scripts": {
-        "check-require": [],
+        "check-require": [
+            "@composer install --working-dir=src/MessageBus",
+            "tools/composer-require-checker/vendor/bin/composer-require-checker check src/MessageBus/composer.json",
+            "@composer install --working-dir=src/PdoPersistence",
+            "tools/composer-require-checker/vendor/bin/composer-require-checker check src/PdoPersistence/composer.json"
+        ],
         "fixcs": "php-cs-fixer fix -v",
-        "normalize-all": [],
+        "normalize-all": [
+            "@composer normalize --diff",
+            "@composer normalize --diff src/MessageBus/composer.json",
+            "@composer normalize --diff src/PdoPersistence/composer.json",
+            "@composer normalize --diff tools/composer-require-checker/composer.json",
+            "@composer normalize --diff tools/psalm/composer.json"
+        ],
         "pre-command-run": "mkdir -p var",
         "psalm": "tools/psalm/vendor/bin/psalm --show-info --no-diff",
         "test": "phpunit",
-        "validate-all": []
+        "validate-all": [
+            "@composer validate --strict --no-check-publish",
+            "@composer validate --strict src/MessageBus/composer.json",
+            "@composer validate --strict src/PdoPersistence/composer.json"
+        ]
     }
 }
