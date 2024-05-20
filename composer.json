@@ -84,7 +84,7 @@
         "validate-all": [
             "@composer validate --strict --no-check-publish",
             "@composer validate --strict src/BunnyTransport/composer.json",
-            "@composer validate --strict --no-check-publish src/Demo/composer.json",
+            "@composer validate --strict src/Demo/composer.json",
             "@composer validate --strict src/Message/composer.json",
             "@composer validate --strict src/MessageBus/composer.json",
             "@composer validate --strict src/PdoPersistence/composer.json"
