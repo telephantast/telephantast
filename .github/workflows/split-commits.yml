@@ -1,0 +1,27 @@
+name: Split commits
+
+on:
+  push:
+    branches: ['main', '*.x']
+
+concurrency:
+  group: split
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - { namespace: BunnyTransport, repo: bunny-transport }
+          - { namespace: Message, repo: message }
+          - { namespace: MessageBus, repo: message-bus }
+          - { namespace: PdoPersistence, repo: pdo-persistence }
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: |
+          repo_url="https://${{ secrets.SPLITTER_ACCESS_TOKEN }}@github.com/telephantast/${{ matrix.package.repo }}.git"
+          git subtree push --prefix src/${{ matrix.package.namespace }} "$repo_url" ${{ github.ref_name }}
