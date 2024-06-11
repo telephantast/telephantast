@@ -39,17 +39,17 @@ final class BunnyPublish implements TransportPublish
      * @throws \JsonException
      * @throws \Throwable
      */
-    public function publish(array $envelopes): void
+    public function publish(array $outgoingEnvelopes): void
     {
         $channel = $this->channel();
         $confirmListener = $this->confirmListener;
         $promises = [];
 
-        foreach ($envelopes as $envelope) {
+        foreach ($outgoingEnvelopes as $outgoingEnvelope) {
             $deferred = new Deferred();
-            $deferred->promise()->then($envelope->onSuccess(...), $envelope->onFailure(...));
-            $promises[] = $channel
-                ->publish(...$this->messageEncoder->encode($envelope->envelope), exchange: $envelope->exchange)
+            $promises[] = $deferred->promise();
+            $channel
+                ->publish(...$this->messageEncoder->encode($outgoingEnvelope->envelope), exchange: $outgoingEnvelope->exchange)
                 ->then(
                     onFulfilled: static function (int $deliveryTag) use ($confirmListener, $deferred): void {
                         $confirmListener->registerEnvelope($deliveryTag, $deferred);

@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "ext-pcntl": "*",
+        "ext-pdo": "*",
         "amphp/amp": "^3.0",
         "bunny/bunny": "^0.5.5",
         "psr/clock": "^1.0",
