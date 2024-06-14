@@ -14,31 +14,24 @@ use function React\Async\await;
 /**
  * @api
  */
-final class BunnyConsume implements TransportConsume
+final readonly class BunnyConsume implements TransportConsume
 {
-    private const DEFAULT_PREFETCH_COUNT = 50;
+    private const int DEFAULT_PREFETCH_COUNT = 100;
 
     private BunnyMessageDecoder $messageDecoder;
 
-    /**
-     * @var \WeakMap<Consumer, \Closure(): void>
-     */
-    private \WeakMap $consumerToCancel;
-
     public function __construct(
-        private readonly BunnyConnectionPool $connectionPool,
+        private BunnyConnectionPool $connectionPool,
         ObjectDenormalizer $objectDenormalizer,
-        private readonly int $prefetchCount = self::DEFAULT_PREFETCH_COUNT,
+        private int $prefetchCount = self::DEFAULT_PREFETCH_COUNT,
     ) {
         $this->messageDecoder = new BunnyMessageDecoder($objectDenormalizer);
-        /** @var \WeakMap<Consumer, \Closure(): void> */
-        $this->consumerToCancel = new \WeakMap();
     }
 
     /**
      * @psalm-suppress MissingThrowsDocblock
      */
-    public function runConsumer(Consumer $consumer): void
+    public function runConsumer(Consumer $consumer): \Closure
     {
         $channel = await($this->connectionPool->get()->channel());
         await($channel->qos(prefetchCount: $this->prefetchCount));
@@ -51,22 +44,15 @@ final class BunnyConsume implements TransportConsume
             },
             queue: $consumer->queue,
         ))->consumerTag;
-        $this->consumerToCancel[$consumer] = static function () use ($channel, $consumerTag): void {
+
+        return static function () use ($channel, $consumerTag): void {
             await($channel->cancel($consumerTag));
             await($channel->close());
         };
     }
 
-    /**
-     * @throws \Throwable
-     */
-    public function stopConsumer(Consumer $consumer): void
+    public function disconnect(): void
     {
-        $cancel = $this->consumerToCancel[$consumer] ?? null;
-
-        if ($cancel !== null) {
-            $cancel();
-            unset($this->consumerToCancel[$consumer]);
-        }
+        $this->connectionPool->disconnect();
     }
 }

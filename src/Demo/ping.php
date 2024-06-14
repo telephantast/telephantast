@@ -84,6 +84,5 @@ $transportConsume->runConsumer($consumer);
 
 trapSignal([SIGINT, SIGTERM]);
 
-$transportConsume->stopConsumer($consumer);
 $publishPool->disconnect();
 $consumePool->disconnect();
