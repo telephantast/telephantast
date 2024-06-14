@@ -8,6 +8,7 @@ use Bunny\Message;
 use Telephantast\MessageBus\Async\Consumer;
 use Telephantast\MessageBus\Async\ObjectDenormalizer;
 use Telephantast\MessageBus\Async\TransportConsume;
+use function React\Async\async;
 use function React\Async\await;
 
 /**
@@ -43,8 +44,10 @@ final class BunnyConsume implements TransportConsume
         await($channel->qos(prefetchCount: $this->prefetchCount));
         $consumerTag = await($channel->consume(
             callback: function (Message $message) use ($channel, $consumer): void {
-                $consumer->handle($this->messageDecoder->decode($message));
-                await($channel->ack($message));
+                async(function () use ($channel, $consumer, $message): void {
+                    $consumer->handle($this->messageDecoder->decode($message));
+                    await($channel->ack($message));
+                })();
             },
             queue: $consumer->queue,
         ))->consumerTag;
