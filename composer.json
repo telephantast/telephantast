@@ -80,7 +80,7 @@
             "@composer normalize --diff tools/psalm/composer.json"
         ],
         "pre-command-run": "mkdir -p var",
-        "psalm": "tools/psalm/vendor/bin/psalm --show-info --no-diff",
+        "psalm": "tools/psalm/vendor/bin/psalm --show-info --no-diff --no-cache",
         "test": "phpunit",
         "validate-all": [
             "@composer validate --strict --no-check-publish",
