@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Telephantast\PdoPersistence;
 
 use Telephantast\MessageBus\Outbox\Outbox;
+use Telephantast\MessageBus\Outbox\OutboxAlreadyExists;
 use Telephantast\MessageBus\Outbox\OutboxStorage;
 
 /**
@@ -17,7 +18,7 @@ final readonly class PostgresOutboxPdoStorage implements OutboxStorage
      */
     public function __construct(
         private \PDO $connection,
-        private string $table,
+        private string $table = 'telephantast_outbox',
     ) {}
 
     public function setup(): void
@@ -55,19 +56,37 @@ final readonly class PostgresOutboxPdoStorage implements OutboxStorage
         return null;
     }
 
-    public function save(?string $queue, string $messageId, Outbox $outbox): void
+    public function create(?string $queue, string $messageId, Outbox $outbox): void
     {
         $statement = $this->connection->prepare(
             <<<SQL
                 insert into {$this->table} (queue, message_id, outbox)
                 values (?, ?, ?)
-                on conflict (message_id, queue) do update
-                set outbox = excluded.outbox
+                on conflict (message_id, queue) do nothing
                 SQL,
         );
         $statement->bindValue(1, $queue ?? '');
         $statement->bindValue(2, $messageId);
         $statement->bindValue(3, serialize($outbox), \PDO::PARAM_LOB);
+        $statement->execute();
+
+        if ($statement->rowCount() === 0) {
+            throw new OutboxAlreadyExists();
+        }
+    }
+
+    public function empty(?string $queue, string $messageId): void
+    {
+        $statement = $this->connection->prepare(
+            <<<SQL
+                update {$this->table}
+                set outbox = ?
+                where queue = ? and message_id = ?
+                SQL,
+        );
+        $statement->bindValue(1, serialize(new Outbox()), \PDO::PARAM_LOB);
+        $statement->bindValue(2, $queue ?? '');
+        $statement->bindValue(3, $messageId);
         $statement->execute();
     }
 }
