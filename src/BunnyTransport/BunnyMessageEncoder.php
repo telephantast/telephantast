@@ -88,7 +88,7 @@ final readonly class BunnyMessageEncoder
             $envelope = $envelope->withoutStamp(Delay::class);
         }
 
-        $headers['stamps'] = array_map($this->objectNormalizer->normalize(...), $envelope->classToStamp);
+        $headers['stamps'] = array_map($this->objectNormalizer->normalize(...), $envelope->stamps);
 
         return [
             'body' => json_encode($this->objectNormalizer->normalize($envelope->message), JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
