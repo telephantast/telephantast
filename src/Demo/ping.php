@@ -27,7 +27,7 @@ use Telephantast\PdoPersistence\PdoTransactionProvider;
 use Telephantast\PdoPersistence\PostgresOutboxPdoStorage;
 use function Amp\trapSignal;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/messages.php';
 
 const QUEUE = 'ping';

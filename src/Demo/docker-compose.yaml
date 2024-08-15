@@ -6,7 +6,7 @@ services:
       HISTFILE: /root/history/.history
       ENV: /root/.bashrc
     volumes:
-      - ../..:/var/www/html:cached
+      - .:/var/www/html:cached
       - php_history:/root/history
 
   postgres:

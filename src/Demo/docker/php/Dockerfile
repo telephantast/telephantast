@@ -21,4 +21,4 @@ RUN set -eux && \
 
 WORKDIR /var/www/html
 
-# CMD composer install
+CMD composer install

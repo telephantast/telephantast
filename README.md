@@ -46,13 +46,13 @@ var_dump($messageBus->dispatch(new Ping()));
 
 ```shell
 # Setup
-composer create-project --stability=dev telephantast/demo telephantast
-cd telephantast
-docker-compose up --remove-orphans --detach --build
+composer create-project --stability=dev telephantast/demo telephantast-demo
+cd telephantast-demo
+docker compose up --remove-orphans --detach --build
 
-# Send ping and start wait for pong
-docker-compose run -it php php ping_sender.php
+# Send ping and start waiting for pong
+docker compose run -it --rm php php ping.php
 
-# In separate process handle ping and reply with pong
-docker-compose run -it php php ping_receiver.php
+# In a separate process handle ping and reply with pong
+docker compose run -it --rm php php pong.php
 ```
