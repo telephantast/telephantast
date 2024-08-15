@@ -8,11 +8,11 @@ use Telephantast\BunnyTransport\BunnyConnectionPool;
 use Telephantast\BunnyTransport\BunnyConsume;
 use Telephantast\BunnyTransport\BunnyPublish;
 use Telephantast\BunnyTransport\BunnySetup;
-use Telephantast\MessageBus\Async\ClassBasedExchangeResolver;
+use Telephantast\MessageBus\Async\AddExchangeMiddleware;
 use Telephantast\MessageBus\Async\Consumer;
+use Telephantast\MessageBus\Async\MessageClassBasedExchangeResolver;
 use Telephantast\MessageBus\Async\ObjectSerializer;
-use Telephantast\MessageBus\Async\Publish;
-use Telephantast\MessageBus\Async\PublishHandler;
+use Telephantast\MessageBus\Async\Publisher;
 use Telephantast\MessageBus\CreatedAt\AddCreatedAtMiddleware;
 use Telephantast\MessageBus\Handler\CallableHandler;
 use Telephantast\MessageBus\Handler\HandlerWithMiddlewares;
@@ -35,12 +35,12 @@ require_once __DIR__ . '/messages.php';
 const QUEUE = 'pong';
 
 // Setup Queue
-$exchangeResolver = new ClassBasedExchangeResolver();
+$exchangeResolver = new MessageClassBasedExchangeResolver();
 $objectNormalizer = new ObjectSerializer();
 $publishPool = new BunnyConnectionPool(host: 'rabbitmq');
 $consumePool = new BunnyConnectionPool(host: 'rabbitmq');
 $transportSetup = new BunnySetup($publishPool);
-$publish = new Publish(new BunnyPublish($publishPool, $objectNormalizer), $exchangeResolver);
+$transportPublish = new BunnyPublish($publishPool, $objectNormalizer);
 $transportConsume = new BunnyConsume($consumePool, $objectNormalizer);
 $transportSetup->setup([
     $exchangeResolver->resolve(Ping::class) => [QUEUE],
@@ -56,7 +56,7 @@ $outboxStorage->setup();
 // Publish Pong
 $messageBus = new MessageBus(
     handlerRegistry: new ArrayHandlerRegistry([
-        Pong::class => new HandlerWithMiddlewares(new PublishHandler($publish), [
+        Pong::class => new HandlerWithMiddlewares(new Publisher($transportPublish), [
             new TryPublishViaOutboxMiddleware(),
         ]),
     ]),
@@ -65,6 +65,7 @@ $messageBus = new MessageBus(
         new AddCausationIdMiddleware(),
         new AddCorrelationIdMiddleware(),
         new AddCreatedAtMiddleware(),
+        new AddExchangeMiddleware(),
     ],
 );
 
@@ -78,7 +79,7 @@ $consumer = new Consumer(
         }),
     ]),
     middlewares: [
-        new ConsumerOutboxMiddleware($outboxStorage, $transactionProvider, $publish),
+        new ConsumerOutboxMiddleware($outboxStorage, $transactionProvider, $transportPublish),
     ],
     messageBus: $messageBus,
 );

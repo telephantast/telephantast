@@ -7,6 +7,7 @@ namespace Telephantast\BunnyTransport;
 use Bunny\Channel;
 use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
+use Telephantast\MessageBus\Async\Exchange;
 use Telephantast\MessageBus\Async\ObjectNormalizer;
 use Telephantast\MessageBus\Async\TransportPublish;
 use function React\Async\async;
@@ -39,17 +40,18 @@ final class BunnyPublish implements TransportPublish
      * @throws \JsonException
      * @throws \Throwable
      */
-    public function publish(array $outgoingEnvelopes): void
+    public function publish(array $envelopes): void
     {
         $channel = $this->channel();
         $confirmListener = $this->confirmListener;
         $promises = [];
 
-        foreach ($outgoingEnvelopes as $outgoingEnvelope) {
+        foreach ($envelopes as $envelope) {
+            $exchange = $envelope->getStamp(Exchange::class)?->exchange ?? throw new \LogicException('No exchange stamp');
             $deferred = new Deferred();
             $promises[] = $deferred->promise();
             $channel
-                ->publish(...$this->messageEncoder->encode($outgoingEnvelope->envelope), exchange: $outgoingEnvelope->exchange)
+                ->publish(...$this->messageEncoder->encode($envelope), exchange: $exchange)
                 ->then(
                     onFulfilled: static function (int $deliveryTag) use ($confirmListener, $deferred): void {
                         $confirmListener->registerEnvelope($deliveryTag, $deferred);
