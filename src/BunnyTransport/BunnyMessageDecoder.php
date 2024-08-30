@@ -17,10 +17,10 @@ use Telephantast\MessageBus\MessageId\MessageId;
  * @psalm-internal Telephantast\BunnyTransport
  * @psalm-import-type BunnyHeaders from BunnyMessageEncoder
  */
-final readonly class BunnyMessageDecoder
+final class BunnyMessageDecoder
 {
     public function __construct(
-        private ObjectDenormalizer $objectDenormalizer,
+        private readonly ObjectDenormalizer $objectDenormalizer,
     ) {}
 
     public function decode(BunnyMessage $bunnyMessage): Envelope

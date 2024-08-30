@@ -9,10 +9,10 @@ use Telephantast\MessageBus\Transaction\TransactionProvider;
 /**
  * @api
  */
-final readonly class PdoTransactionProvider implements TransactionProvider
+final class PdoTransactionProvider implements TransactionProvider
 {
     public function __construct(
-        private \PDO $connection,
+        private readonly \PDO $connection,
     ) {}
 
     /**

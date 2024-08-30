@@ -11,9 +11,9 @@ use Telephantast\Message\Message;
  * @psalm-immutable
  * @implements Message<void>
  */
-final readonly class Ping implements Message {}
+final class Ping implements Message {}
 
 /**
  * @psalm-immutable
  */
-final readonly class Pong implements Event {}
+final class Pong implements Event {}

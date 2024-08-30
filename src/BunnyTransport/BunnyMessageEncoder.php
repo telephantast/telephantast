@@ -33,14 +33,14 @@ use Telephantast\MessageBus\Stamp;
  *     stamps?: array<class-string<Stamp>, mixed>,
  * }
  */
-final readonly class BunnyMessageEncoder
+final class BunnyMessageEncoder
 {
     private const ENCODING = 'UTF-8';
     private const CONTENT_TYPE = 'application/json';
     private const DELIVERY_MODE_PERSISTENT = 2;
 
     public function __construct(
-        private ObjectNormalizer $objectNormalizer,
+        private readonly ObjectNormalizer $objectNormalizer,
     ) {}
 
     /**

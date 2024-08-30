@@ -10,10 +10,10 @@ use function React\Async\await;
 /**
  * @api
  */
-final readonly class BunnySetup implements TransportSetup
+final class BunnySetup implements TransportSetup
 {
     public function __construct(
-        private BunnyConnectionPool $connectionPool,
+        private readonly BunnyConnectionPool $connectionPool,
     ) {}
 
     /**

@@ -11,14 +11,14 @@ use Telephantast\MessageBus\Outbox\OutboxStorage;
 /**
  * @api
  */
-final readonly class PostgresOutboxPdoStorage implements OutboxStorage
+final class PostgresOutboxPdoStorage implements OutboxStorage
 {
     /**
      * @param literal-string $table
      */
     public function __construct(
-        private \PDO $connection,
-        private string $table = 'telephantast_outbox',
+        private readonly \PDO $connection,
+        private readonly string $table = 'telephantast_outbox',
     ) {}
 
     public function setup(): void

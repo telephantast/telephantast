@@ -13,16 +13,16 @@ use function React\Async\await;
 /**
  * @api
  */
-final readonly class BunnyConsume implements TransportConsume
+final class BunnyConsume implements TransportConsume
 {
-    private const int DEFAULT_PREFETCH_COUNT = 100;
+    private const DEFAULT_PREFETCH_COUNT = 100;
 
-    private BunnyMessageDecoder $messageDecoder;
+    private readonly BunnyMessageDecoder $messageDecoder;
 
     public function __construct(
-        private BunnyConnectionPool $connectionPool,
+        private readonly BunnyConnectionPool $connectionPool,
         ObjectDenormalizer $objectDenormalizer,
-        private int $prefetchCount = self::DEFAULT_PREFETCH_COUNT,
+        private readonly int $prefetchCount = self::DEFAULT_PREFETCH_COUNT,
     ) {
         $this->messageDecoder = new BunnyMessageDecoder($objectDenormalizer);
     }
