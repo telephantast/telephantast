@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.1",
         "bunny/bunny": "^0.5.5",
         "react/async": "^4.2",
         "react/event-loop": "^1.5",

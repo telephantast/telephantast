@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.1",
         "ext-pcntl": "*",
         "amphp/amp": "^3.0",
         "revolt/event-loop-adapter-react": "^1.1",

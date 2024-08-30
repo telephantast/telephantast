@@ -14,6 +14,8 @@
         "ext-pdo": "*",
         "amphp/amp": "^3.0",
         "bunny/bunny": "^0.5.5",
+        "doctrine/dbal": "^4.1",
+        "doctrine/orm": "^3.2",
         "psr/clock": "^1.0",
         "psr/container": "^2.0",
         "psr/log": "^3.0",
