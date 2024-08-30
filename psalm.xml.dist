@@ -41,6 +41,7 @@
         <classAndDescendants name="ReflectionException"/>
         <classAndDescendants name="LogicException"/>
         <classAndDescendants name="RuntimeException"/>
+        <classAndDescendants name="Doctrine\DBAL\Exception"/>
     </ignoreExceptions>
 
     <issueHandlers>
