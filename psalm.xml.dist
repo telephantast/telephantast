@@ -42,6 +42,7 @@
         <classAndDescendants name="LogicException"/>
         <classAndDescendants name="RuntimeException"/>
         <classAndDescendants name="Doctrine\DBAL\Exception"/>
+        <classAndDescendants name="Psr\Container\ContainerExceptionInterface"/>
     </ignoreExceptions>
 
     <issueHandlers>
