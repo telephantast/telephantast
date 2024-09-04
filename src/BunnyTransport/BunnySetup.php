@@ -24,9 +24,7 @@ final class BunnySetup implements TransportSetup
         $channel = await($this->connectionPool->get()->channel());
 
         foreach ($exchangeToQueues as $exchange => $queues) {
-            await($channel->exchangeDeclare($exchange, 'x-delayed-message', durable: true, arguments: [
-                'x-delayed-type' => 'fanout',
-            ]));
+            await($channel->exchangeDeclare($exchange, 'fanout', durable: true));
 
             foreach ($queues as $queue) {
                 await($channel->queueDeclare($queue, durable: true));
