@@ -17,6 +17,8 @@ jobs:
       matrix:
         package:
           - { namespace: BunnyTransport, repo: bunny-transport }
+          - { namespace: Demo, repo: demo }
+          - { namespace: DoctrinePersistence, repo: doctrine-persistence }
           - { namespace: Message, repo: message }
           - { namespace: MessageBus, repo: message-bus }
           - { namespace: PdoPersistence, repo: pdo-persistence }
