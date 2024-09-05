@@ -22,7 +22,7 @@ use Telephantast\MessageBus\MessageContext;
 use Telephantast\MessageBus\MessageId\AddCausationIdMiddleware;
 use Telephantast\MessageBus\MessageId\AddCorrelationIdMiddleware;
 use Telephantast\MessageBus\MessageId\AddMessageIdMiddleware;
-use Telephantast\MessageBus\Outbox\ConsumerOutboxMiddleware;
+use Telephantast\MessageBus\Outbox\OutboxConsumerMiddleware;
 use Telephantast\MessageBus\Outbox\TryPublishViaOutboxMiddleware;
 use Telephantast\PdoPersistence\PdoTransactionProvider;
 use Telephantast\PdoPersistence\PostgresOutboxPdoStorage;
@@ -79,7 +79,7 @@ $consumer = new Consumer(
         }),
     ]),
     middlewares: [
-        new ConsumerOutboxMiddleware($outboxStorage, $transactionProvider, $transportPublish),
+        new OutboxConsumerMiddleware($outboxStorage, $transactionProvider, $transportPublish),
     ],
     messageBus: $messageBus,
 );
