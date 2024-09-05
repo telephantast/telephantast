@@ -1,0 +1,30 @@
+{
+    "name": "telephantast/telephantast-bundle",
+    "description": "Telephantast Symfony Bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Valentin Udaltsov",
+            "email": "udaltsov.valentin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "symfony/config": "^6 || ^7",
+        "symfony/console": "^6 || ^7",
+        "symfony/dependency-injection": "^6 || ^7",
+        "symfony/http-kernel": "^6 || ^7",
+        "telephantast/message": "^0.1@dev",
+        "telephantast/message-bus": "^0.1@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Telephantast\\TelephantastBundle\\": ""
+        }
+    },
+    "config": {
+        "lock": false,
+        "vendor-dir": "../../var/TelephantastBundle/vendor"
+    }
+}

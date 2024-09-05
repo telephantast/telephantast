@@ -19,6 +19,7 @@ jobs:
           - { namespace: Message, repo: message }
           - { namespace: MessageBus, repo: message-bus }
           - { namespace: PdoPersistence, repo: pdo-persistence }
+          - { namespace: TelephantastBundle, repo: telephantast-bundle }
     steps:
       - uses: actions/checkout@v4
         with:
