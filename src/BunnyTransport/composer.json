@@ -11,13 +11,19 @@
     ],
     "require": {
         "php": "^8.1",
-        "bunny/bunny": "^0.5.5",
+        "bunny/bunny": "dev-0.5-fixed",
         "react/async": "^4.2",
         "react/event-loop": "^1.5",
         "react/promise": "^2.11",
         "telephantast/message": "^0.1@dev",
         "telephantast/message-bus": "^0.1@dev"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/telephantast/jakubkulhan-bunny-fork"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Telephantast\\BunnyTransport\\": ""
