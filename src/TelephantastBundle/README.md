@@ -3,7 +3,7 @@
 ## Installation
 
 ```shell
-composer require telephantast/telephantast-bundle '^1.0@dev'
+composer require telephantast/telephantast-bundle '^0.1@dev'
 ```
 
 If you use Symfony Flex, the bundle will be automatically registered in `bundles.php`. Otherwise, do it manually:
