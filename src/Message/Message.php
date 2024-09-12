@@ -6,7 +6,6 @@ namespace Telephantast\Message;
 
 /**
  * @api
- * @psalm-immutable
  * @template-covariant TResult
  */
 interface Message {}
