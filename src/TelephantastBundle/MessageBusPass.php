@@ -7,6 +7,7 @@ namespace Telephantast\TelephantastBundle;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocatorArgument;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
@@ -15,7 +16,7 @@ use Telephantast\Message\Event;
 use Telephantast\Message\Message;
 use Telephantast\MessageBus\Async\Mapping\Async;
 use Telephantast\MessageBus\Handler\EventHandlers;
-use Telephantast\MessageBus\HandlerRegistry\ArrayHandlerRegistry;
+use Telephantast\MessageBus\HandlerRegistry\PsrContainerHandlerRegistry;
 use Telephantast\MessageBus\MessageBus;
 use Telephantast\MessageBus\Reflection\AttributeReader;
 use Telephantast\TelephantastBundle\Handler\HandlerMiddlewareConfigurators;
@@ -78,7 +79,7 @@ final class MessageBusPass implements CompilerPassInterface
 
         $container
             ->findDefinition(MessageBus::class)
-            ->replaceArgument('$handlerRegistry', $this->buildHandlerRegistry($messageBusHandlers));
+            ->replaceArgument('$handlerRegistry', $this->buildHandlerRegistry($container, $messageBusHandlers));
 
         if ($container->hasDefinition('telephantast.consume_console_command')) {
             $container
@@ -103,8 +104,8 @@ final class MessageBusPass implements CompilerPassInterface
             $container->setDefinition(
                 $consumerId,
                 (new ChildDefinition('telephantast.consumer'))
-                ->replaceArgument('$queue', $queue)
-                ->replaceArgument('$handlerRegistry', $this->buildHandlerRegistry($handlersByMessageClass)),
+                    ->replaceArgument('$queue', $queue)
+                    ->replaceArgument('$handlerRegistry', $this->buildHandlerRegistry($container, $handlersByMessageClass)),
             );
             $queueToConsumer[$queue] = new Reference($consumerId);
         }
@@ -115,14 +116,14 @@ final class MessageBusPass implements CompilerPassInterface
     /**
      * @param array<class-string<Message>, non-empty-array<Definition|Reference>> $handlerArraysByMessageClass
      */
-    private function buildHandlerRegistry(array $handlerArraysByMessageClass): Definition
+    private function buildHandlerRegistry(ContainerBuilder $container, array $handlerArraysByMessageClass): Definition
     {
-        /** @var array<class-string<Message>, Definition|Reference> */
+        /** @var array<class-string<Message>, Reference> */
         $handlersByMessageClass = [];
 
         foreach ($handlerArraysByMessageClass as $messageClass => $handlers) {
             if (\count($handlers) === 1) {
-                $handlersByMessageClass[$messageClass] = $handlers[array_key_first($handlers)];
+                $handlersByMessageClass[$messageClass] = $this->registerHandler($container, $handlers[array_key_first($handlers)]);
 
                 continue;
             }
@@ -135,9 +136,24 @@ final class MessageBusPass implements CompilerPassInterface
                 ));
             }
 
-            $handlersByMessageClass[$messageClass] = new Definition(EventHandlers::class, [array_values($handlers)]);
+            $handlersByMessageClass[$messageClass] = $this->registerHandler($container, new Definition(EventHandlers::class, [array_values($handlers)]));
         }
 
-        return new Definition(ArrayHandlerRegistry::class, [$handlersByMessageClass]);
+        return new Definition(PsrContainerHandlerRegistry::class, [ServiceLocatorTagPass::register($container, $handlersByMessageClass)]);
+    }
+
+    private int $handlerIndex = 0;
+
+    private function registerHandler(ContainerBuilder $container, Definition|Reference $handler): Reference
+    {
+        if ($handler instanceof Reference) {
+            return $handler;
+        }
+
+        $id = \sprintf('telephantast.handler.%x', $this->handlerIndex);
+        $container->setDefinition($id, $handler);
+        ++$this->handlerIndex;
+
+        return new Reference($id);
     }
 }

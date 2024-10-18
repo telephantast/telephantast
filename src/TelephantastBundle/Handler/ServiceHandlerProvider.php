@@ -30,26 +30,18 @@ final class ServiceHandlerProvider implements HandlerProvider
             }
 
             foreach (HandlerDescriptor::fromClass($reflectionClass) as $handlerDescriptor) {
-                $id = $handlerDescriptor->id ?? $handlerDescriptor->functionName();
-
-                if ($handlerDescriptor->function->isStatic()) {
-                    $handler = new Definition(CallableHandler::class, [
-                        '$id' => $id,
-                        '$handler' => [$handlerDescriptor->function->class, $handlerDescriptor->function->name],
-                    ]);
-                } else {
-                    $handler = new Definition(CallableHandler::class, [
-                        '$id' => $id,
-                        '$callable' => (new Definition(\Closure::class))
-                            ->addArgument([new Reference($serviceId), $handlerDescriptor->function->name])
-                            ->setFactory([\Closure::class, 'fromCallable']),
-                    ]);
-                }
+                $id = $handlerDescriptor->id ?? \sprintf('%s.%s', $serviceId, $handlerDescriptor->function->name);
 
                 yield new HandlerBuilder(
                     id: $id,
                     descriptor: $handlerDescriptor,
-                    handler: $handler,
+                    handler: new Definition(CallableHandler::class, [
+                        '$id' => $id,
+                        '$handler' => [
+                            $handlerDescriptor->function->isStatic() ? $handlerDescriptor->function->class : new Reference($serviceId),
+                            $handlerDescriptor->function->name,
+                        ],
+                    ]),
                 );
             }
         }
