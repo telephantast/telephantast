@@ -70,6 +70,7 @@ $messageBus = new MessageBus(
 );
 
 // Consume Ping and dispatch Pong
+/** @psalm-suppress InvalidArgument */
 $consumer = new Consumer(
     queue: QUEUE,
     handlerRegistry: new ArrayHandlerRegistry([
