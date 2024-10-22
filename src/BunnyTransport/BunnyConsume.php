@@ -15,7 +15,7 @@ use function React\Async\await;
  */
 final class BunnyConsume implements TransportConsume
 {
-    private const DEFAULT_PREFETCH_COUNT = 100;
+    private const DEFAULT_PREFETCH_COUNT = 1;
 
     private readonly BunnyMessageDecoder $messageDecoder;
 
