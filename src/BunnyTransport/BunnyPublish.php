@@ -51,6 +51,7 @@ final class BunnyPublish implements TransportPublish
             $deferred = new Deferred();
             $promises[] = $deferred->promise();
             $channel
+                // TODO use mandatory
                 ->publish(...$this->messageEncoder->encode($envelope), exchange: $exchange)
                 ->then(
                     onFulfilled: static function (int $deliveryTag) use ($confirmListener, $deferred): void {
