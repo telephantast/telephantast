@@ -70,4 +70,9 @@ final class BunnyConnectionPool
 
         await($clientToDisconnect->disconnect());
     }
+
+    public function __destruct()
+    {
+        $this->disconnect();
+    }
 }
