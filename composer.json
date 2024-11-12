@@ -37,8 +37,8 @@
     },
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/telephantast/jakubkulhan-bunny-fork"
+            "type": "git",
+            "url": "https://github.com/telephantast/jakubkulhan-bunny-fork.git"
         }
     ],
     "autoload": {
