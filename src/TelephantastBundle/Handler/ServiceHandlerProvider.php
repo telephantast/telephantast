@@ -37,7 +37,7 @@ final class ServiceHandlerProvider implements HandlerProvider
                     descriptor: $handlerDescriptor,
                     handler: new Definition(CallableHandler::class, [
                         '$id' => $id,
-                        '$handler' => [
+                        '$callable' => [
                             $handlerDescriptor->function->isStatic() ? $handlerDescriptor->function->class : new Reference($serviceId),
                             $handlerDescriptor->function->name,
                         ],
