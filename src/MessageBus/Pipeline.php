@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Telephantast\MessageBus;
 
-use IteratorAggregate;
-use NoRewindIterator;
 use Telephantast\Message\Message;
 
 /**
