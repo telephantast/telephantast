@@ -29,7 +29,7 @@ final class DoctrinePostgresOutboxStorage implements OutboxStorage
     {
         $table = $schema->createTable($this->table);
         $table->addColumn('queue', Types::TEXT);
-        $table->addColumn('message_id', Types::GUID);
+        $table->addColumn('message_id', Types::TEXT);
         $table->addColumn('outbox', Types::BINARY);
         $table->setPrimaryKey(['message_id', 'queue']);
     }
