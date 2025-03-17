@@ -77,15 +77,19 @@ final class MessageBusPass implements CompilerPassInterface
             }
         }
 
+        $registry =  $this->buildHandlerRegistry($container, $messageBusHandlers);
         $container
             ->findDefinition(MessageBus::class)
-            ->replaceArgument('$handlerRegistry', $this->buildHandlerRegistry($container, $messageBusHandlers));
+            ->replaceArgument('$handlerRegistry', $registry);
 
         if ($container->hasDefinition('telephantast.consume_console_command')) {
             $container
                 ->findDefinition('telephantast.setup_console_command')
                 ->replaceArgument('$messageClassesToQueues', array_map(array_unique(...), $messageClassesToQueues));
-
+            $container
+                ->findDefinition('telephantast.debug_console_command')
+                ->replaceArgument('$messageBusHandlers', $messageBusHandlers)
+                ->replaceArgument('$queueToConsumerHandlers', $queueToConsumerHandlers);
             $container
                 ->findDefinition('telephantast.consume_console_command')
                 ->replaceArgument('$queueToConsumer', $this->buildQueueToConsumerLocator($container, $queueToConsumerHandlers));

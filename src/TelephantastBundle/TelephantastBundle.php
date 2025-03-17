@@ -40,6 +40,7 @@ use Telephantast\MessageBus\Outbox\TryPublishViaOutboxMiddleware;
 use Telephantast\TelephantastBundle\Async\ConsumeConsoleCommand;
 use Telephantast\TelephantastBundle\Async\SetupConsoleCommand;
 use Telephantast\TelephantastBundle\Authorization\MessageAuthorizersPass;
+use Telephantast\TelephantastBundle\Debug\DebugConsoleCommand;
 use Telephantast\TelephantastBundle\EntityHandler\EntityHandlerProvider;
 use Telephantast\TelephantastBundle\Handler\HandlerMiddlewareConfigurators;
 use Telephantast\TelephantastBundle\Handler\ServiceHandlerProvider;
@@ -417,6 +418,14 @@ final class TelephantastBundle extends AbstractBundle
                     '$messageClassesToQueues' => abstract_arg('Message classes to queues'),
                 ])
                 ->tag('console.command', ['command' => 'telephantast:setup'])
+
+            // Debug
+            ->set('telephantast.debug_console_command', DebugConsoleCommand::class)
+            ->args([
+                '$messageBusHandlers' => abstract_arg('messageBusHandlers'),
+                '$queueToConsumerHandlers' => abstract_arg('queueToConsumerHandlers'),
+            ])
+            ->tag('console.command', ['command' => 'telephantast:debug'])
             // Publish
             ->set('telephantast.exchange_resolver.message_class_based', MessageClassBasedExchangeResolver::class)
             ->set('telephantast.publisher', HandlerWithMiddlewares::class)
