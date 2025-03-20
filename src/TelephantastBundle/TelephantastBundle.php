@@ -98,7 +98,7 @@ final class TelephantastBundle extends AbstractBundle
 {
     public function build(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new MessageBusPass([new ServiceHandlerProvider(), new EntityHandlerProvider()]));
+        $container->addCompilerPass(new TelephantastPass([new ServiceHandlerProvider(), new EntityHandlerProvider()]));
         $container->addCompilerPass(new MessageAuthorizersPass());
 
         $container->registerAttributeForAutoconfiguration(

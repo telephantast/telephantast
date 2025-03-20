@@ -26,7 +26,7 @@ use Telephantast\TelephantastBundle\Handler\HandlerProvider;
  * @internal
  * @psalm-internal Telephantast\TelephantastBundle
  */
-final class MessageBusPass implements CompilerPassInterface
+final class TelephantastPass implements CompilerPassInterface
 {
     /**
      * @param list<HandlerProvider> $handlerProviders
