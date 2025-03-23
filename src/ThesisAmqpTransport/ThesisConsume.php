@@ -15,6 +15,8 @@ use Thesis\Amqp\Delivery;
  */
 final class ThesisConsume implements TransportConsume
 {
+    private const DEFAULT_PREFETCH_COUNT = 1;
+
     private readonly ThesisEnvelopeDecoder $decoder;
 
     /**
@@ -23,7 +25,7 @@ final class ThesisConsume implements TransportConsume
     public function __construct(
         private readonly Client $client,
         ObjectDenormalizer $objectDenormalizer,
-        private readonly int $prefetchCount,
+        private readonly int $prefetchCount = self::DEFAULT_PREFETCH_COUNT,
     ) {
         $this->decoder = new ThesisEnvelopeDecoder($objectDenormalizer);
     }
