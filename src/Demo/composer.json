@@ -14,10 +14,10 @@
         "ext-pcntl": "*",
         "amphp/amp": "^3.0",
         "revolt/event-loop-adapter-react": "^1.1",
-        "telephantast/thesis-amqp-transport": "^0.1@dev",
         "telephantast/message": "^0.1@dev",
         "telephantast/message-bus": "^0.1@dev",
-        "telephantast/pdo-persistence": "^0.1@dev"
+        "telephantast/pdo-persistence": "^0.1@dev",
+        "telephantast/thesis-amqp-transport": "^0.1@dev"
     },
     "config": {
         "lock": false,

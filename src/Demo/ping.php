@@ -32,20 +32,23 @@ use function Amp\trapSignal;
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/messages.php';
 
-const QUEUE = 'ping';
+const QUEUE_PONG = 'pong';
+const QUEUE_PING = 'ping';
 
 // Setup Queue
 $exchangeResolver = new MessageClassBasedExchangeResolver();
 $objectNormalizer = new ObjectSerializer();
 $config = new Config(host: 'rabbitmq');
 $publishClient = new Client($config);
+$publishClient->connect();
 $consumeClient = new Client($config);
+$consumeClient->connect();
 $transportSetup = new ThesisSetup($publishClient);
 $transportPublish = new ThesisPublish($publishClient, $objectNormalizer);
 $transportConsume = new ThesisConsume($consumeClient, $objectNormalizer);
 $transportSetup->setup([
-    $exchangeResolver->resolve(Ping::class) => [],
-    $exchangeResolver->resolve(Pong::class) => [QUEUE],
+    $exchangeResolver->resolve(Ping::class) => [QUEUE_PONG],
+    $exchangeResolver->resolve(Pong::class) => [QUEUE_PING],
 ]);
 
 // Setup Outbox
@@ -73,7 +76,7 @@ $messageBus->dispatch(new Ping());
 
 // Consume Pong
 $consumer = new Consumer(
-    queue: QUEUE,
+    queue: QUEUE_PING,
     handlerRegistry: new ArrayHandlerRegistry([
         Pong::class => new CallableHandler('pong subscriber', static function (Pong $pong): void {
             var_dump($pong);
@@ -87,3 +90,6 @@ $consumer = new Consumer(
 $transportConsume->runConsumer($consumer);
 
 trapSignal([SIGINT, SIGTERM]);
+
+$publishClient->disconnect();
+$consumeClient->disconnect();
