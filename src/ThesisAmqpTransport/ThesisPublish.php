@@ -9,6 +9,7 @@ use Telephantast\MessageBus\Async\ObjectNormalizer;
 use Telephantast\MessageBus\Async\TransportPublish;
 use Thesis\Amqp\Client;
 use Thesis\Amqp\Confirmation;
+use Thesis\Amqp\PublishResult;
 
 /**
  * @api
@@ -45,6 +46,10 @@ final class ThesisPublish implements TransportPublish
             $confirmations[] = $confirmation;
         }
 
-        Confirmation::awaitAll($confirmations);
+        foreach (Confirmation::awaitAll($confirmations) as $publishResult) {
+            if ($publishResult !== PublishResult::Acked) {
+                throw new \LogicException('Failed to publish an envelope');
+            }
+        }
     }
 }
