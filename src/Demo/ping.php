@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Telephantast\Demo;
 
-use Telephantast\BunnyTransport\BunnyConnectionPool;
-use Telephantast\BunnyTransport\BunnyConsume;
-use Telephantast\BunnyTransport\BunnyPublish;
-use Telephantast\BunnyTransport\BunnySetup;
 use Telephantast\MessageBus\Async\AddExchangeMiddleware;
 use Telephantast\MessageBus\Async\Consumer;
 use Telephantast\MessageBus\Async\MessageClassBasedExchangeResolver;
@@ -25,6 +21,11 @@ use Telephantast\MessageBus\Outbox\OutboxConsumerMiddleware;
 use Telephantast\MessageBus\Outbox\TryPublishViaOutboxMiddleware;
 use Telephantast\PdoPersistence\PdoTransactionProvider;
 use Telephantast\PdoPersistence\PostgresOutboxPdoStorage;
+use Telephantast\ThesisAmqpTransport\ThesisConsume;
+use Telephantast\ThesisAmqpTransport\ThesisPublish;
+use Telephantast\ThesisAmqpTransport\ThesisSetup;
+use Thesis\Amqp\Client;
+use Thesis\Amqp\Config;
 use function Amp\trapSignal;
 
 /** @psalm-suppress MissingFile */
@@ -36,11 +37,12 @@ const QUEUE = 'ping';
 // Setup Queue
 $exchangeResolver = new MessageClassBasedExchangeResolver();
 $objectNormalizer = new ObjectSerializer();
-$publishPool = new BunnyConnectionPool(host: 'rabbitmq');
-$consumePool = new BunnyConnectionPool(host: 'rabbitmq');
-$transportSetup = new BunnySetup($publishPool);
-$transportPublish = new BunnyPublish($publishPool, $objectNormalizer);
-$transportConsume = new BunnyConsume($consumePool, $objectNormalizer);
+$config = new Config(host: 'rabbitmq');
+$publishClient = new Client($config);
+$consumeClient = new Client($config);
+$transportSetup = new ThesisSetup($publishClient);
+$transportPublish = new ThesisPublish($publishClient, $objectNormalizer);
+$transportConsume = new ThesisConsume($consumeClient, $objectNormalizer);
 $transportSetup->setup([
     $exchangeResolver->resolve(Ping::class) => [],
     $exchangeResolver->resolve(Pong::class) => [QUEUE],
@@ -85,6 +87,3 @@ $consumer = new Consumer(
 $transportConsume->runConsumer($consumer);
 
 trapSignal([SIGINT, SIGTERM]);
-
-$publishPool->disconnect();
-$consumePool->disconnect();
