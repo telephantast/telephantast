@@ -50,8 +50,6 @@ final class ConsumeConsoleCommand extends Command
 
         trapSignal([SIGINT, SIGTERM]);
 
-        $this->transportConsume->disconnect();
-
         return self::SUCCESS;
     }
 }

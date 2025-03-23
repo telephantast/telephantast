@@ -48,9 +48,4 @@ final class BunnyConsume implements TransportConsume
             await($channel->close());
         };
     }
-
-    public function disconnect(): void
-    {
-        $this->connectionPool->disconnect();
-    }
 }
