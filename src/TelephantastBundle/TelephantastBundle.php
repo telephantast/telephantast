@@ -391,7 +391,6 @@ final class TelephantastBundle extends AbstractBundle
                     '$vhost' => $async['vhost'],
                     '$heartbeat' => $async['heartbeat'],
                 ])
-                ->call('connect')
             ->set('telephantast.thesis.client.publish', Client::class)
                 ->args([
                     service('telephantast.thesis.config'),
