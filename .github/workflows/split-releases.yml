@@ -23,6 +23,7 @@ jobs:
           - { namespace: MessageBus, repo: message-bus }
           - { namespace: PdoPersistence, repo: pdo-persistence }
           - { namespace: TelephantastBundle, repo: telephantast-bundle }
+          - { namespace: ThesisAmqpTransport, repo: thesis-amqp-transport }
     steps:
       - uses: actions/checkout@v4
         with:

@@ -1,0 +1,27 @@
+{
+    "name": "telephantast/thesis-amqp-transport",
+    "description": "Telephantast Thesis Amqp Transport",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Valentin Udaltsov",
+            "email": "udaltsov.valentin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "thesis/amqp": "^0.1.0",
+        "telephantast/message": "^0.1@dev",
+        "telephantast/message-bus": "^0.1@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Telephantast\\ThesisAmqpTransport\\": ""
+        }
+    },
+    "config": {
+        "lock": false,
+        "vendor-dir": "../../var/ThesisAmqpTransport/vendor"
+    }
+}

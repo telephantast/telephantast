@@ -25,7 +25,8 @@
         "revolt/event-loop-adapter-react": "^1.1",
         "symfony/config": "^7.1",
         "symfony/dependency-injection": "^7.1",
-        "symfony/http-kernel": "^7.1"
+        "symfony/http-kernel": "^7.1",
+        "thesis/amqp": "^0.1.0"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.8.2",

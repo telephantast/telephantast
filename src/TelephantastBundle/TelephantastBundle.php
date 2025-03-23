@@ -14,10 +14,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symfony\Component\DependencyInjection\Loader\Configurator\ParametersConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-use Telephantast\BunnyTransport\BunnyConnectionPool;
-use Telephantast\BunnyTransport\BunnyConsume;
-use Telephantast\BunnyTransport\BunnyPublish;
-use Telephantast\BunnyTransport\BunnySetup;
 use Telephantast\MessageBus\Async\AddExchangeMiddleware;
 use Telephantast\MessageBus\Async\Consumer;
 use Telephantast\MessageBus\Async\MessageClassBasedExchangeResolver;
@@ -47,6 +43,11 @@ use Telephantast\TelephantastBundle\Mapping\ConsumerMiddleware;
 use Telephantast\TelephantastBundle\Mapping\HandlerMiddleware;
 use Telephantast\TelephantastBundle\Mapping\HandlerMiddlewareWithConfigurator;
 use Telephantast\TelephantastBundle\Mapping\MessageBusMiddleware;
+use Telephantast\ThesisAmqpTransport\ThesisConsume;
+use Telephantast\ThesisAmqpTransport\ThesisPublish;
+use Telephantast\ThesisAmqpTransport\ThesisSetup;
+use Thesis\Amqp\Client;
+use Thesis\Amqp\Config;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\inline_service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -71,14 +72,12 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_it
  *     },
  *     async: array{
  *         enabled: bool,
- *         bunny: array{
- *             host: non-empty-string,
- *             port: int,
- *             user: non-empty-string,
- *             password: non-empty-string,
- *             vhost: non-empty-string,
- *             heartbeat: int,
- *         },
+ *         host: non-empty-string,
+ *         port: int,
+ *         user: non-empty-string,
+ *         password: non-empty-string,
+ *         vhost: non-empty-string,
+ *         heartbeat: int,
  *         prefetch_count: int,
  *         object_normalizer_id: non-empty-string,
  *         object_denormalizer_id: non-empty-string,
@@ -98,7 +97,10 @@ final class TelephantastBundle extends AbstractBundle
 {
     public function build(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new TelephantastPass([new ServiceHandlerProvider(), new EntityHandlerProvider()]));
+        $container->addCompilerPass(new TelephantastPass([
+            new ServiceHandlerProvider(),
+            new EntityHandlerProvider(),
+        ]));
         $container->addCompilerPass(new MessageAuthorizersPass());
 
         $container->registerAttributeForAutoconfiguration(
@@ -338,17 +340,12 @@ final class TelephantastBundle extends AbstractBundle
             ->arrayNode('async')
                 ->canBeEnabled()
                 ->children()
-                    ->arrayNode('bunny')
-                        ->addDefaultsIfNotSet()
-                        ->children()
-                            ->scalarNode('host')->cannotBeEmpty()->defaultValue('localhost')->end()
-                            ->scalarNode('port')->cannotBeEmpty()->defaultValue(5672)->end()
-                            ->scalarNode('user')->cannotBeEmpty()->defaultValue('guest')->end()
-                            ->scalarNode('password')->cannotBeEmpty()->defaultValue('guest')->end()
-                            ->scalarNode('vhost')->cannotBeEmpty()->defaultValue('/')->end()
-                            ->integerNode('heartbeat')->info('heartbeat in seconds')->defaultValue(60)->end()
-                        ->end()
-                    ->end()
+                    ->scalarNode('host')->cannotBeEmpty()->defaultValue('localhost')->end()
+                    ->scalarNode('port')->cannotBeEmpty()->defaultValue(5672)->end()
+                    ->scalarNode('user')->cannotBeEmpty()->defaultValue('guest')->end()
+                    ->scalarNode('password')->cannotBeEmpty()->defaultValue('guest')->end()
+                    ->scalarNode('vhost')->cannotBeEmpty()->defaultValue('/')->end()
+                    ->integerNode('heartbeat')->info('heartbeat in seconds')->defaultValue(60)->end()
                     ->integerNode('prefetch_count')->defaultValue(100)->end()
                     ->scalarNode('object_normalizer_id')
                         ->cannotBeEmpty()
@@ -384,35 +381,46 @@ final class TelephantastBundle extends AbstractBundle
 
         $services
             ->set('telephantast.object_normalizer.serializer', ObjectSerializer::class)
-            // Bunny
-            ->set('telephantast.bunny_connection_pool', BunnyConnectionPool::class)
+            // Thesis
+            ->set('telephantast.thesis.config', Config::class)
                 ->args([
-                    '$host' => $async['bunny']['host'],
-                    '$port' => $async['bunny']['port'],
-                    '$user' => $async['bunny']['user'],
-                    '$password' => $async['bunny']['password'],
-                    '$vhost' => $async['bunny']['vhost'],
-                    '$heartbeatSeconds' => $async['bunny']['heartbeat'],
+                    '$host' => $async['host'],
+                    '$port' => $async['port'],
+                    '$user' => $async['user'],
+                    '$password' => $async['password'],
+                    '$vhost' => $async['vhost'],
+                    '$heartbeat' => $async['heartbeat'],
                 ])
-            ->set('telephantast.transport_setup', BunnySetup::class)
+                ->call('connect')
+            ->set('telephantast.thesis.client.publish', Client::class)
                 ->args([
-                    '$connectionPool' => service('telephantast.bunny_connection_pool'),
+                    service('telephantast.thesis.config'),
                 ])
-            ->set('telephantast.transport_publish', BunnyPublish::class)
+                ->call('connect')
+            ->set('telephantast.thesis.client.consume', Client::class)
                 ->args([
-                    '$connectionPool' => service('telephantast.bunny_connection_pool'),
+                    service('telephantast.thesis.config'),
+                ])
+                ->call('connect')
+            ->set('telephantast.thesis.transport_setup', ThesisSetup::class)
+                ->args([
+                    '$client' => service('telephantast.thesis.client.publish'),
+                ])
+            ->set('telephantast.thesis.publish', ThesisPublish::class)
+                ->args([
+                    '$client' => service('telephantast.thesis.client.publish'),
                     '$objectNormalizer' => service($async['object_normalizer_id']),
                 ])
-            ->set('telephantast.transport_consume', BunnyConsume::class)
+            ->set('telephantast.thesis.consume', ThesisConsume::class)
                 ->args([
-                    '$connectionPool' => inline_service()->parent('telephantast.bunny_connection_pool'),
+                    '$client' => service('telephantast.thesis.client.consume'),
                     '$objectDenormalizer' => service($async['object_denormalizer_id']),
                     '$prefetchCount' => $async['prefetch_count'],
                 ])
             // Setup
             ->set('telephantast.setup_console_command', SetupConsoleCommand::class)
                 ->args([
-                    '$transportSetup' => service('telephantast.transport_setup'),
+                    '$transportSetup' => service('telephantast.thesis.transport_setup'),
                     '$exchangeResolver' => service($async['exchange_resolver_id']),
                     '$messageClassesToQueues' => abstract_arg('Message classes to queues'),
                 ])
@@ -423,7 +431,7 @@ final class TelephantastBundle extends AbstractBundle
                 ->args([
                     '$handler' => inline_service(Publisher::class)
                         ->args([
-                            '$transportPublish' => service('telephantast.transport_publish'),
+                            '$transportPublish' => service('telephantast.thesis.publish'),
                         ]),
                     '$middlewares' => array_filter([
                         $async['outbox']['enabled'] ? inline_service(TryPublishViaOutboxMiddleware::class) : null,
@@ -449,7 +457,7 @@ final class TelephantastBundle extends AbstractBundle
                 ])
             ->set('telephantast.consume_console_command', ConsumeConsoleCommand::class)
                 ->args([
-                    '$transportConsume' => service('telephantast.transport_consume'),
+                    '$transportConsume' => service('telephantast.thesis.consume'),
                     '$queueToConsumer' => abstract_arg('Queue to consumer'),
                 ])
                 ->tag('console.command', ['command' => 'telephantast:consume']);
@@ -460,14 +468,14 @@ final class TelephantastBundle extends AbstractBundle
                     ->args([
                         '$outboxStorage' => service($async['outbox']['storage_id']),
                         '$transactionProvider' => service($async['outbox']['transaction_provider_id']),
-                        '$transportPublish' => service('telephantast.transport_publish'),
+                        '$transportPublish' => service('telephantast.thesis.publish'),
                     ])
                     ->tag('telephantast.handler_middleware', ['priority' => 500])
                 ->set('telephantast.outbox_consumer_middleware', OutboxConsumerMiddleware::class)
                     ->args([
                         '$outboxStorage' => service($async['outbox']['storage_id']),
                         '$transactionProvider' => service($async['outbox']['transaction_provider_id']),
-                        '$transportPublish' => service('telephantast.transport_publish'),
+                        '$transportPublish' => service('telephantast.thesis.publish'),
                     ])
                     ->tag('telephantast.consumer_middleware', ['priority' => 500]);
         }
