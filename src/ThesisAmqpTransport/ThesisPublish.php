@@ -7,6 +7,7 @@ namespace Telephantast\ThesisAmqpTransport;
 use Telephantast\MessageBus\Async\Exchange;
 use Telephantast\MessageBus\Async\ObjectNormalizer;
 use Telephantast\MessageBus\Async\TransportPublish;
+use Thesis\Amqp\Channel;
 use Thesis\Amqp\Client;
 use Thesis\Amqp\Confirmation;
 use Thesis\Amqp\PublishResult;
@@ -17,6 +18,8 @@ use Thesis\Amqp\PublishResult;
 final class ThesisPublish implements TransportPublish
 {
     private readonly ThesisEnvelopeEncoder $encoder;
+
+    private ?Channel $channel = null;
 
     public function __construct(
         private readonly Client $client,
@@ -30,15 +33,16 @@ final class ThesisPublish implements TransportPublish
      */
     public function publish(array $envelopes): void
     {
-        $this->client->connect();
-        $channel = $this->client->channel();
-        $channel->confirmSelect();
+        if ($this->channel === null) {
+            $this->channel = $this->client->channel();
+            $this->channel->confirmSelect();
+        }
 
         $confirmations = [];
 
         foreach ($envelopes as $envelope) {
             $exchange = $envelope->getStamp(Exchange::class)?->exchange ?? throw new \LogicException('No exchange stamp');
-            $confirmation = $channel->publish(
+            $confirmation = $this->channel->publish(
                 message: $this->encoder->encode($envelope),
                 exchange: $exchange,
             );
